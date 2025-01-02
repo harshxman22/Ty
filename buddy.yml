@@ -28,11 +28,10 @@ pipelines:
         commands:
           - echo "Setting file permissions..."
           - chmod +x *
-    
+
     - step:
         name: "Run Python Script"
         image: "python:3.13"
         commands:
           - echo "Running Python script..."
           - python3 m.py
-          
