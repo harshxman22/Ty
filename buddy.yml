@@ -1,0 +1,38 @@
+version: 2.0
+
+pipelines:
+  default:
+    - step:
+        name: "Compile and Run Go File"
+        image: "golang:1.20"
+        commands:
+          - echo "Compiling and running Go file..."
+          - go mod tidy                  # Ensure all dependencies are downloaded
+          - go build -o app main.go      # Compile the Go file
+          - ./app                        # Run the compiled Go binary
+        caches:
+          - go-mod                       # Cache Go modules
+
+    - step:
+        name: "Install Python Dependencies"
+        image: "python:3.13"
+        commands:
+          - echo "Installing Python dependencies..."
+          - pip install -r requirements.txt
+        caches:
+          - pip                           # Cache Python pip modules
+
+    - step:
+        name: "Set File Permissions"
+        image: "python:3.13"
+        commands:
+          - echo "Setting file permissions..."
+          - chmod +x *
+    
+    - step:
+        name: "Run Python Script"
+        image: "python:3.13"
+        commands:
+          - echo "Running Python script..."
+          - python3 m.py
+          
