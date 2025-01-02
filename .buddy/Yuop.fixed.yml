@@ -4,3 +4,16 @@
     refs:
     - "refs/heads/main"
   fail_on_prepare_env_warning: true
+  actions:
+  - action: "python3 m.py"
+    type: "BUILD"
+    docker_image_name: "library/python"
+    docker_image_tag: "3.13"
+    execute_commands:
+    - "pip install -r requirements.txt"
+    - "go build raja.go"
+    - "python3 m.py"
+    - ""
+    cached_dirs:
+    - "/root/.cache/pip"
+    shell: "BASH"
