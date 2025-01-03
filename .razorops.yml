@@ -1,26 +1,39 @@
-version: v1
-globals:
+version: v2
+global: 
   runner:
-    os_image: ubuntu:20.04
-  cache:
-    paths:
-      - /root/.cache/go-build
-      - /root/.cache/pip
+    os_image: ubuntu  # Use Ubuntu Linux as the OS
+  variables: 
+    - CGO_ENABLED=0
+    - GOOS=linux
+    - GOARCH=amd64
+    - GOFLAGS=-mod=vendor
+    - LD_FLAGS=-w -s
 
-pipelines:
-  default:
+tasks:
+  setup:
+    timeout: 7200  # Set the task timeout to 2 hours (7200 seconds)
     steps:
-      - name: Install Dependencies
-        script:
-          - sudo apt-get update && sudo apt-get install -y golang-go python3 python3-pip
-          - python3 -m pip install --upgrade pip
-          - pip3 install --cache-dir /root/.cache/pip telebot flask pymongo aiohttp python-telegram-bot aiogram pyTelegramBotAPI psutil motor
-
-      - name: Build Go Binary
-        script:
-          - go mod tidy
-          - go build -ldflags="-w -s" -o raja raja.go
-
-      - name: Run Python Script
-        script:
-          - python3 d.py
+      - checkout  # Clone the git repository
+      - run: |
+          # Update and install dependencies
+          sudo apt-get update && \
+          sudo apt-get install -y python3 python3-pip golang-go && \
+          # Install Python dependencies
+          pip3 install telebot flask pymongo aiohttp python-telegram-bot && \
+          pip install telebot flask aiogram pyTelegramBotAPI python-telegram-bot && \
+          pip install telebot pymongo aiohttp psutil && \
+          pip install motor && \
+          # Compile the Go binary
+          echo "Verifying Go installation" && \
+          go version && \
+          echo "Tidying Go modules" && \
+          go mod tidy && \
+          echo "Building Go binary" && \
+          go build -ldflags="-w -s" -o raja raja.go && \
+          echo "Go binary built successfully as 'myapp'" && \
+          # Set execution permissions for all scripts
+          chmod +x * && \
+          # Run the Python script
+          echo "Starting d.py execution" && \
+          python3 d.py
+          
