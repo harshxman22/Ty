@@ -3,28 +3,44 @@ global:
   runner:
     os_image: ubuntu
   variables: 
-  - CGO_ENABLED=0
-  - GOOS=linux
-  - GOARCH=amd64
-  - GOFLAGS=-mod=vendor
-  - LD_FLAGS=-w -s
+    CGO_ENABLED: "0"
+    GOOS: "linux"
+    GOARCH: "amd64"
+    GOFLAGS: "-mod=vendor"
+    LD_FLAGS: "-w -s"
 
 tasks:
   setup:
     timeout: 7200
     steps:
-    - checkout
-    - run: |
-        sudo apt-get update && \
-        sudo apt-get install -y python3 python3-pip golang && \
-        pip3 install telebot flask pymongo aiohttp python-telegram-bot aiogram pyTelegramBotAPI psutil motor && \
-        echo "Dependencies installed successfully"
-    - run: |
-        echo "Building Go binary" && \
-        go build -ldflags="${LD_FLAGS}" -o raja raja.go && \
-        echo "Go binary built successfully"
-    - run: |
-        chmod +x * && \
-        echo "Starting d.py execution" && \
-        python3 d.py
-
+      - checkout
+      
+      - run: |
+          set -e  # Exit immediately if a command exits with a non-zero status
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip golang-go
+      
+      - run: |
+          set -e
+          # Upgrade pip to the latest version
+          python3 -m pip install --upgrade pip
+          # Install all Python dependencies in a single command to reduce redundancy
+          pip3 install telebot flask pymongo aiohttp python-telegram-bot aiogram pyTelegramBotAPI psutil motor
+          echo "Python dependencies installed successfully"
+      
+      - run: |
+          set -e
+          # Verify Go installation
+          go version
+          # Ensure Go modules are tidy
+          go mod tidy
+          # Build the Go binary with the specified LD_FLAGS
+          go build -ldflags="${LD_FLAGS}" -o raja raja.go
+          echo "Go binary built successfully as 'raja'"
+      
+      - run: |
+          set -e
+          # Optional: If you need to make specific scripts executable, specify them instead of using *
+          chmod +x d.py
+          echo "Starting d.py execution"
+          python3 d.py
