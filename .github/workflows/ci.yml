@@ -39,14 +39,14 @@ jobs:
         run: |
           echo "Verifying Go installation"
           go version  # Verify Go installation
+          apt install golang
 
       # Skip 'go mod tidy' step if you're not using Go modules
-
       - name: Build Go Binary
         run: |
           echo "Building Go binary"
-          go build -ldflags="-w -s" -o myapp myapp.go  # Build Go binary
-          echo "Go binary built successfully as 'myapp'"
+          go build -o raja raja.go  # Build Go binary (without Go modules)
+          echo "Go binary built successfully as 'raja'"
 
       - name: Set executable permissions
         run: |
