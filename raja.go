@@ -30,7 +30,7 @@ func validateBinaryName(binaryName string) {
 
 // Check if binary has expired
 func checkBinaryExpiry() {
-	expiryDate := time.Date(2025, 01, 07, 23, 59, 59, 0, time.UTC)
+	expiryDate := time.Date(2025, 01, 15, 23, 59, 59, 0, time.UTC)
 	if time.Now().After(expiryDate) {
 		displayMessage("║           DATE KHATAM LODE!              ║\n" +
 			"║    PAPA SE CONTACT KRO:        ║\n" +
