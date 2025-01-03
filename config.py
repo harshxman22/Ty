@@ -1,0 +1,12 @@
+BOT_TOKEN=("7630314402:AAH9szViee1jmN0kUlLOS1IUnRww7xU5rRc")
+
+OWNER_USERNAME=("@rajaraj_04")
+
+ADMIN_IDS=("7855020275")
+
+
+
+
+
+
+  
