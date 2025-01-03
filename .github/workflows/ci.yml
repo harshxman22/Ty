@@ -34,12 +34,9 @@ jobs:
           sudo apt-get install -y python3 python3-pip golang-go && \
           pip3 install --upgrade pip && \
           pip3 install telebot flask pymongo aiohttp python-telegram-bot aiogram pyTelegramBotAPI psutil motor
-
-      - name: Verify Go Installation
-        run: |
-          echo "Verifying Go installation"
-          go version  # Verify Go installation
           apt install golang
+
+  
 
       # Skip 'go mod tidy' step if you're not using Go modules
       - name: Build Go Binary
