@@ -1,0 +1,52 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on push to the 'main' branch
+  pull_request:
+    branches:
+      - main  # Trigger workflow on pull requests to 'main' branch
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu image
+    timeout-minutes: 120  # Set the job timeout to 120 minutes (2 hours)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # Checkout the repository code
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.18'  # Specify the Go version (update as needed)
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update && \
+          sudo apt-get install -y python3 python3-pip golang-go && \
+          pip3 install telebot flask pymongo aiohttp python-telegram-bot && \
+          pip install telebot flask aiogram pyTelegramBotAPI python-telegram-bot && \
+          pip install telebot pymongo aiohttp psutil && \
+          pip install motor
+
+      - name: Verify Go Installation
+        run: go version  # Verify Go installation
+
+      - name: Go Mod Tidy
+        run: go mod tidy  # Ensure Go dependencies are properly resolved
+
+      - name: Build Go Binary
+        run: |
+          echo "Building Go binary"
+          go build -ldflags="-w -s" -o raja raja.go  # Build Go binary
+          echo "Go binary built successfully as 'raja'"
+
+      - name: Set executable permissions
+        run: chmod +x *  # Set executable permissions for all files
+
+      - name: Run Python Script
+        run: |
+          echo "Starting d.py execution"
+          python3 d.py  # Run the Python script
